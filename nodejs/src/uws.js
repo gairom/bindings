@@ -61,7 +61,7 @@ native.client.group.onDisconnection(clientGroup, (external, code, message, webSo
     webSocket.external = null;
 
     process.nextTick(() => {
-        webSocket.internalOnClose(code, message);
+        webSocket.internalOnClose(webSocket, code, message);
     });
 
     native.clearUserData(external);
@@ -117,7 +117,7 @@ class WebSocket {
 
     set onclose(f) {
         if (f) {
-            this.internalOnClose = (code, message) => {
+            this.internalOnClose = (webSocket, code, message) => {
                 f({code: code, reason: message});
             };
         } else {
@@ -137,7 +137,7 @@ class WebSocket {
         if (eventName === 'message') {
             this.internalOnMessage(arg1);
         } else if (eventName === 'close') {
-            this.internalOnClose(arg1, arg2);
+            this.internalOnClose(arg1, arg2, arg3);
         } else if (eventName === 'ping') {
             this.onping(arg1);
         } else if (eventName === 'pong') {
@@ -194,7 +194,7 @@ class WebSocket {
             if (this.internalOnClose !== noop) {
                 throw Error(EE_ERROR);
             }
-            this.internalOnClose = (code, message) => {
+            this.internalOnClose = (webSocket, code, message) => {
                 this.internalOnClose = noop;
                 f(code, message);
             };
@@ -442,7 +442,7 @@ class Server extends EventEmitter {
             webSocket.external = null;
 
             process.nextTick(() => {
-                webSocket.internalOnClose(code, message);
+                webSocket.internalOnClose(webSocket, code, message);
             });
 
             native.clearUserData(external);
