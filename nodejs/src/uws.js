@@ -486,7 +486,7 @@ class Server extends EventEmitter {
             if (this.serverGroup) {
                 _upgradeReq = request;
                 this._upgradeCallback = callback ? callback : noop;
-                native.upgrade(this.serverGroup, socket.external, secKey, request.headers['sec-websocket-extensions'], request.headers['sec-websocket-protocol']);
+                native.upgrade(this.serverGroup, socket.external, secKey, request.headers['sec-websocket-extensions'], request.headers['sec-websocket-protocol'].split(",").map(item=>item.trim())[0]);
             }
         } else {
             const secKey = request.headers['sec-websocket-key'];
@@ -499,7 +499,7 @@ class Server extends EventEmitter {
                     if (this.serverGroup) {
                         _upgradeReq = request;
                         this._upgradeCallback = callback ? callback : noop;
-                        native.upgrade(this.serverGroup, ticket, secKey, request.headers['sec-websocket-extensions'], request.headers['sec-websocket-protocol']);
+                        native.upgrade(this.serverGroup, ticket, secKey, request.headers['sec-websocket-extensions'], request.headers['sec-websocket-protocol'].split(",").map(item=>item.trim())[0]);
                     }
                 });
             }
